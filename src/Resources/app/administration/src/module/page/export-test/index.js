@@ -18,7 +18,7 @@ export default {
 
     methods: {
         startExport() {
-            console.log('Starting export with selected order:', this.selectedOrder);
+            console.log('Starting  with selected order:', this.selectedOrder);
             this.$router.push({ path: 'confirmation' });
         },
     },

@@ -11,7 +11,6 @@ export default {
 
     data() {
         return {
-            // Use hardcoded orders for testing
             orders: [
                 {
                     orderNumber: "1", // Hardcoded order number
