@@ -1,0 +1,110 @@
+.export-confirmation-page {
+  padding: 20px;
+
+  h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+  }
+}
+
+.export-file-section,
+.export-content-section,
+.order-selection {
+  padding: 20px;
+  margin-bottom: 15px;
+}
+
+/* Container for side-by-side layout */
+.side-by-side-container {
+  display: flex;
+  gap: 20px; /* Space between "Select Order" and "Your File" sections */
+  align-items: flex-start;
+}
+
+/* Order Selection Styling */
+.order-selection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+
+  label {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 5px;
+    font-weight: 500;
+  }
+
+  select {
+    padding: 8px 12px;
+    font-size: 16px;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+    width: 100%;
+    max-width: 400px;
+    cursor: pointer;
+    box-sizing: border-box;
+
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+  }
+}
+
+/* Export File Section Styling */
+.export-file-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  flex: 1;
+
+  h3 {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 10px;
+  }
+
+  .sw-button {
+    max-width: 150px;
+    font-size: 16px;
+    font-weight: bold;
+  }
+}
+
+.export-content-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  h3 {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 10px;
+  }
+
+  .csv-content-preview {
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    color: #333;
+    max-width: 100%;
+    box-sizing: border-box;
+
+    pre {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      margin: 0;
+      max-width: 100%;
+    }
+  }
+}

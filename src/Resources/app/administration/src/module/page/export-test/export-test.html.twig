@@ -1,0 +1,22 @@
+{% block sw_customer_detail %}
+    <sw-page class="export-orders-page">
+        <template #smart-bar-header>
+            <h2>Export Orders</h2>
+        </template>
+
+        <template #content>
+            <sw-card-view>
+                <sw-card title="Export Orders Disclaimer" large>
+                    <div class="export-orders-container">
+                        <p>Are you sure you want to export an order?</p>
+
+                        <!-- Start Export Button with Confirmation -->
+                        <sw-button variant="primary" @click="startExport">
+                            Start Export
+                        </sw-button>
+                    </div>
+                </sw-card>
+            </sw-card-view>
+        </template>
+    </sw-page>
+{% endblock %}

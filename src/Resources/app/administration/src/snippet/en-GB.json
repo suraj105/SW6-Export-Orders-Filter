@@ -1,0 +1,9 @@
+{
+    "export": {
+        "administration": {
+            "menuItem": "Export Orders",
+            "navItem": "Export Orders",
+            "description": "A Plugin to export orders"
+        }
+    }
+}

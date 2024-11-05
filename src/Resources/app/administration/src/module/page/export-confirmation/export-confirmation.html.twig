@@ -1,0 +1,43 @@
+<sw-page class="export-confirmation-page">
+    <template #smart-bar-header>
+        <h2>Export Confirmation</h2>
+    </template>
+
+    <template #content>
+        <sw-card-view>
+            <sw-card title="Export Orders" large>
+
+                <!-- Flex Container for Side-by-Side Layout -->
+                <div class="side-by-side-container">
+
+                    <!-- Dropdown for Selecting Order Number (Left) -->
+                    <div class="order-selection">
+                        <h3>Select order by number:</h3>
+                        <select id="orderDropdown" v-model="selectedOrderNumber" @change="filterOrders">
+                            <option v-for="order in orderOptions" :key="order.orderNumber" :value="order.orderNumber" :disabled="order.placeholder">
+                                {{ order.placeholder ? order.label : order.orderNumber + ' - ' + order.orderDateTime }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- File Download Section (Right) -->
+                    <div class="export-file-section">
+                        <h3>Your File</h3>
+                        <sw-button variant="primary" @click="downloadCsv">
+                            Download CSV
+                        </sw-button>
+                    </div>
+                </div>
+
+                <!-- CSV Content Preview Section -->
+                <div class="export-content-section">
+                    <h3>Content</h3>
+                    <sw-card class="csv-content-preview">
+                        <pre v-if="filteredOrders.length">{{ csvPreview }}</pre>
+                        <p v-else>No orders available for export.</p>
+                    </sw-card>
+                </div>
+            </sw-card>
+        </sw-card-view>
+    </template>
+</sw-page>
