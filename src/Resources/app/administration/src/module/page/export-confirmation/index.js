@@ -72,12 +72,6 @@ export default {
             }).join('\n');
 
             return csvContent;
-        },
-
-        newCsvPreview() {
-            // Define CSV header in the specified format
-            let csvContent = ""; // Simplified CSV header
-            return csvContent;
         }
     },
 
@@ -89,7 +83,7 @@ export default {
         },
 
         downloadCsv() {
-            const csvContent = this.newCsvPreview;
+            const csvContent = this.csvPreview;
             const blob = new Blob([csvContent], { type: 'text/csv' });
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
