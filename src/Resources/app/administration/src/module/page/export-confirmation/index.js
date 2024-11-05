@@ -11,6 +11,7 @@ export default {
 
     data() {
         return {
+            // Use hardcoded orders for testing
             orders: [
                 {
                     orderNumber: "1", // Hardcoded order number
@@ -71,6 +72,12 @@ export default {
             }).join('\n');
 
             return csvContent;
+        },
+
+        newCsvPreview() {
+            // Define CSV header in the specified format
+            let csvContent = ""; // Simplified CSV header
+            return csvContent;
         }
     },
 
@@ -82,7 +89,7 @@ export default {
         },
 
         downloadCsv() {
-            const csvContent = this.csvPreview;
+            const csvContent = this.newCsvPreview;
             const blob = new Blob([csvContent], { type: 'text/csv' });
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
