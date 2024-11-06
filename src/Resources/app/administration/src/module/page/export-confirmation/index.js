@@ -36,10 +36,10 @@ export default {
                 "billing_address_street;billing_address_zipcode;billing_address_city;billing_address_company;billing_address_department;" +
                 "billing_address_country_id;billing_address_country_state_id;shipping_address_street;shipping_address_zipcode;" +
                 "shipping_address_city;shipping_address_company;shipping_address_department;shipping_address_country_id;" +
-                "billing_address_country_state_id;amount_total;order_state_id;line_items;order_date_time\n";
+                "billing_address_country_state_id;amount_total;order_state_id;line_items;order_date_time;payment_method;payment_method_id\n";
 
             // Populate CSV with filtered order data
-            csvContent += this.filteredOrders.map(order => {
+            csvContent += this.orders.map(order => {
                 const billingAddress = order.addresses.find(addr => addr.type === 'billing') || {};
                 const shippingAddress = order.addresses.find(addr => addr.type === 'shipping') || {};
                 const lineItems = this.getLineItems(order);
@@ -48,7 +48,7 @@ export default {
                     `${billingAddress.street || ''};${billingAddress.zipcode || ''};${billingAddress.city || ''};${billingAddress.company || ''};${billingAddress.department || ''};` +
                     `${billingAddress.countryId || ''};${billingAddress.countryStateId || ''};${shippingAddress.street || ''};${shippingAddress.zipcode || ''};` +
                     `${shippingAddress.city || ''};${shippingAddress.company || ''};${shippingAddress.department || ''};${shippingAddress.countryId || ''};${shippingAddress.countryStateId || ''};` +
-                    `${order.amountTotal};${order.stateId};"${lineItems}";${order.orderDateTime}`;
+                    `${order.amountTotal};${order.stateId};"${lineItems}";${order.orderDateTime};"";""`;
             }).join('\n');
 
             return csvContent;
@@ -107,26 +107,12 @@ export default {
         },
 
         downloadCsv() {
-            // Check if an order is selected and get the date of the selected order
-            const selectedOrder = this.orders.find(order => order.orderNumber === this.selectedOrderNumber);
-            let formattedDate = "selected_date"; // Default in case no order is selected
-
-            if (selectedOrder) {
-                // Format the selected order's date as YYYY_MM_DD
-                const date = new Date(selectedOrder.orderDateTime);
-                const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const day = String(date.getDate()).padStart(2, '0');
-
-                formattedDate = `${year}_${month}_${day}`;
-            }
-
             const csvContent = this.csvPreview;
             const blob = new Blob([csvContent], { type: 'text/csv' });
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
-            link.download = `exported_orders_${formattedDate}.csv`; // Dynamically set filename
+            link.download = 'exported_orders.csv'; // Set filename to exported_orders.csv without date
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
