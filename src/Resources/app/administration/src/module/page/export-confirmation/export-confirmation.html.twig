@@ -6,10 +6,8 @@
     <template #content>
         <sw-card-view>
 
-            <!-- Main Export Orders Card -->
             <sw-card title="Export Orders" large>
 
-                <!-- Dropdown for Selecting Order Number -->
                 <div class="order-selection">
                     <label for="orderDropdown">Select Order:</label>
                     <select id="orderDropdown" v-model="selectedOrderNumber" @change="filterOrders">
@@ -19,7 +17,6 @@
                     </select>
                 </div>
 
-                <!-- Section 1: File Download -->
                 <div class="export-file-section">
                     <h3>Your File</h3>
                     <sw-button variant="primary" @click="downloadCsv">
