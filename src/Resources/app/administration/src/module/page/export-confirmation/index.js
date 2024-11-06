@@ -11,51 +11,19 @@ export default {
 
     data() {
         return {
-            // Use hardcoded orders for testing
-            orders: [
-                {
-                    orderNumber: "1", // Hardcoded order number
-                    orderCustomer: {
-                        firstName: "Mike"
-                    },
-                    billingAddress: {}, // Empty placeholder for billing address
-                    deliveries: [], // Empty placeholder for deliveries
-                    lineItems: [], // Empty placeholder for line items
-                    orderDateTime: "2024-11-01T10:00:00Z", // Sample date-time
-                },
-                {
-                    orderNumber: "2",
-                    orderCustomer: {
-                        firstName: "Anna"
-                    },
-                    billingAddress: {},
-                    deliveries: [],
-                    lineItems: [],
-                    orderDateTime: "2024-11-02T12:30:00Z", // Sample date-time
-                },
-                {
-                    orderNumber: "3",
-                    orderCustomer: {
-                        firstName: "John"
-                    },
-                    billingAddress: {},
-                    deliveries: [],
-                    lineItems: [],
-                    orderDateTime: "2024-11-03T15:45:00Z", // Sample date-time
-                }
-            ],
+            orders: [], // Array to hold all fetched orders
             filteredOrders: [], // Start with no orders shown
             selectedOrderNumber: "", // Default: placeholder is shown in dropdown
         };
     },
 
     created() {
-        this.loadOrders(); // Load hardcoded orders when the component is created
+        this.loadOrders(); // Fetch orders when the component is created
     },
 
     computed: {
         orderOptions() {
-            // Include a placeholder as the first option if no order is selected
+            // If no order is selected, include the placeholder as the first option
             if (this.selectedOrderNumber === "") {
                 return [{ orderNumber: "", placeholder: true, label: "Please select an order" }, ...this.orders];
             }
@@ -63,12 +31,24 @@ export default {
         },
 
         csvPreview() {
-            // Define CSV header in the specified format
-            let csvContent = "order_number;customer_firstname\n"; // Simplified CSV header
+            // Define CSV header
+            let csvContent = "id;order_number;sales_channel_id;customer_firstname;customer_lastname;customer_email;" +
+                "billing_address_street;billing_address_zipcode;billing_address_city;billing_address_company;billing_address_department;" +
+                "billing_address_country_id;billing_address_country_state_id;shipping_address_street;shipping_address_zipcode;" +
+                "shipping_address_city;shipping_address_company;shipping_address_department;shipping_address_country_id;" +
+                "billing_address_country_state_id;amount_total;order_state_id;line_items;order_date_time\n";
 
-            // Generate each row according to the header, using only hardcoded fields
+            // Populate CSV with filtered order data
             csvContent += this.orders.map(order => {
-                return `${order.orderNumber || ''};${order.orderCustomer.firstName || ''}`;
+                const billingAddress = order.addresses.find(addr => addr.type === 'billing') || {};
+                const shippingAddress = order.addresses.find(addr => addr.type === 'shipping') || {};
+                const lineItems = this.getLineItems(order);
+
+                return `${order.id};${order.orderNumber};${order.salesChannelId};${order.orderCustomer.firstName};${order.orderCustomer.lastName};${order.orderCustomer.email};` +
+                    `${billingAddress.street || ''};${billingAddress.zipcode || ''};${billingAddress.city || ''};${billingAddress.company || ''};${billingAddress.department || ''};` +
+                    `${billingAddress.countryId || ''};${billingAddress.countryStateId || ''};${shippingAddress.street || ''};${shippingAddress.zipcode || ''};` +
+                    `${shippingAddress.city || ''};${shippingAddress.company || ''};${shippingAddress.department || ''};${shippingAddress.countryId || ''};${shippingAddress.countryStateId || ''};` +
+                    `${order.amountTotal};${order.stateId};"${lineItems}";${order.orderDateTime}`;
             }).join('\n');
 
             return csvContent;
@@ -76,10 +56,41 @@ export default {
     },
 
     methods: {
-        loadOrders() {
-            // Use hardcoded orders directly without repository fetch
-            this.filteredOrders = this.orders;
-            console.log('Using hardcoded orders:', this.orders);
+        async loadOrders() {
+            const orderRepository = this.repositoryFactory.create('order');
+            const criteria = new Shopware.Data.Criteria();
+            criteria.setLimit(10); // Adjust limit as necessary
+            criteria.addSorting(Shopware.Data.Criteria.sort('orderDateTime', 'DESC')); // Sort by order date in descending order
+            criteria.addAssociation('lineItems'); // To get line items associated with each order
+            criteria.addAssociation('addresses'); // To get addresses (billing and shipping)
+
+            try {
+                const orders = await orderRepository.search(criteria, Shopware.Context.api);
+                this.orders = orders;
+            } catch (error) {
+                console.error('Error fetching orders:', error);
+            }
+        },
+
+        getLineItems(order) {
+            // Format line items as "quantity x item_id"
+            return order.lineItems.map(item => `${item.quantity}x ${item.id}`).join(', ');
+        },
+
+        filterOrders() {
+            if (this.selectedOrderNumber) {
+                // Find the selected order based on order number
+                const selectedOrder = this.orders.find(order => order.orderNumber === this.selectedOrderNumber);
+
+                // Check if the selected order was found
+                if (selectedOrder) {
+                    // Filter orders to include only those with the same or a later date and time
+                    this.filteredOrders = this.orders.filter(order => new Date(order.orderDateTime) >= new Date(selectedOrder.orderDateTime));
+                }
+            } else {
+                // If no order is selected, show no orders
+                this.filteredOrders = [];
+            }
         },
 
         downloadCsv() {
@@ -88,11 +99,12 @@ export default {
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
-            link.download = `exported_orders_test.csv`; // Static filename for testing
+            link.download = 'exported_orders.csv'; // Set filename to exported_orders.csv without date
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             URL.revokeObjectURL(url);
         }
+
     }
 };

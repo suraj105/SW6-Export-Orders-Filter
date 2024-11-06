@@ -5,31 +5,29 @@
 
     <template #content>
         <sw-card-view>
+
+            <!-- Main Export Orders Card -->
             <sw-card title="Export Orders" large>
 
-                <!-- Flex Container for Side-by-Side Layout -->
-                <div class="side-by-side-container">
-
-                    <!-- Dropdown for Selecting Order Number (Left) -->
-                    <div class="order-selection">
-                        <h3>Select order by number:</h3>
-                        <select id="orderDropdown" v-model="selectedOrderNumber" @change="filterOrders">
-                            <option v-for="order in orderOptions" :key="order.orderNumber" :value="order.orderNumber" :disabled="order.placeholder">
-                                {{ order.placeholder ? order.label : order.orderNumber + ' - ' + order.orderDateTime }}
-                            </option>
-                        </select>
-                    </div>
-
-                    <!-- File Download Section (Right) -->
-                    <div class="export-file-section">
-                        <h3>Your File</h3>
-                        <sw-button variant="primary" @click="downloadCsv">
-                            Download CSV
-                        </sw-button>
-                    </div>
+                <!-- Dropdown for Selecting Order Number -->
+                <div class="order-selection">
+                    <label for="orderDropdown">Select Order:</label>
+                    <select id="orderDropdown" v-model="selectedOrderNumber" @change="filterOrders">
+                        <option v-for="order in orderOptions" :key="order.orderNumber" :value="order.orderNumber" :disabled="order.placeholder">
+                            {{ order.placeholder ? order.label : order.orderNumber + ' - ' + order.orderDateTime }}
+                        </option>
+                    </select>
                 </div>
 
-                <!-- CSV Content Preview Section -->
+                <!-- Section 1: File Download -->
+                <div class="export-file-section">
+                    <h3>Your File</h3>
+                    <sw-button variant="primary" @click="downloadCsv">
+                        Download CSV
+                    </sw-button>
+                </div>
+
+                <!-- Section 2: CSV Content Preview -->
                 <div class="export-content-section">
                     <h3>Content</h3>
                     <sw-card class="csv-content-preview">
