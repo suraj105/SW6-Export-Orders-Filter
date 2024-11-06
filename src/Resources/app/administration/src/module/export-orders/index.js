@@ -1,4 +1,3 @@
-Shopware.Component.register('export-test', () => import('../page/export-test'));
 Shopware.Component.register('export-confirmation', () => import('../page/export-confirmation')); // Register confirmation component
 
 import deDE from '../../snippet/de-DE.json';
@@ -18,10 +17,6 @@ Shopware.Module.register('export-orders', {
     },
 
     routes: {
-        test: {
-            component: 'export-test',
-            path: 'export/test'
-        },
         confirmation: { // New route for confirmation page
             component: 'export-confirmation',
             path: 'export/confirmation'
@@ -31,7 +26,7 @@ Shopware.Module.register('export-orders', {
     navigation: [{
         label: 'export.administration.navItem',
         color: '#ff3d58',
-        path: 'export.orders.test',
+        path: 'export.orders.confirmation',
         icon: 'default-shopping-paper-bag-product',
         parent: 'sw-order',
         position: 100
