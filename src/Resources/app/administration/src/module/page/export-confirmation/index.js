@@ -39,7 +39,7 @@ export default {
                 "billing_address_country_state_id;amount_total;order_state_id;line_items;order_date_time\n";
 
             // Populate CSV with filtered order data
-            csvContent += this.orders.map(order => {
+            csvContent += this.filteredOrders.map(order => {
                 const billingAddress = order.addresses.find(addr => addr.type === 'billing') || {};
                 const shippingAddress = order.addresses.find(addr => addr.type === 'shipping') || {};
                 const lineItems = this.getLineItems(order);
@@ -72,6 +72,19 @@ export default {
             }
         },
 
+        formatOrderDateTime(dateTime) {
+            const date = new Date(dateTime);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+
+            // Return formatted string as "YYYY-MM-DD - HH-MM-SS"
+            return `${year}-${month}-${day} - ${hours}-${minutes}-${seconds}`;
+        },
+
         getLineItems(order) {
             // Format line items as "quantity x item_id"
             return order.lineItems.map(item => `${item.quantity}x ${item.id}`).join(', ');
@@ -94,12 +107,26 @@ export default {
         },
 
         downloadCsv() {
+            // Check if an order is selected and get the date of the selected order
+            const selectedOrder = this.orders.find(order => order.orderNumber === this.selectedOrderNumber);
+            let formattedDate = "selected_date"; // Default in case no order is selected
+
+            if (selectedOrder) {
+                // Format the selected order's date as YYYY_MM_DD
+                const date = new Date(selectedOrder.orderDateTime);
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+
+                formattedDate = `${year}_${month}_${day}`;
+            }
+
             const csvContent = this.csvPreview;
             const blob = new Blob([csvContent], { type: 'text/csv' });
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
-            link.download = 'exported_orders.csv'; // Set filename to exported_orders.csv without date
+            link.download = `exported_orders_${formattedDate}.csv`; // Dynamically set filename
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
